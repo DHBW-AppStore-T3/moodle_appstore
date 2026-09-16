@@ -805,7 +805,16 @@ function initialise_fullme_cli() {
  */
 function setup_get_remote_url() {
     $rurl = array();
-    if (isset($_SERVER['HTTP_HOST'])) {
+    if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== '' && $_SERVER['HTTP_HOST'][0] === '[') {
+        // Bracketed IPv6 literal (e.g. "[2001:db8::1]:8443" or "[2001:db8::1]").
+        // explode(':', ...) below would cut this at the address's own first
+        // colon instead of the closing bracket, producing a host that can
+        // never match parse_url($CFG->wwwroot)'s bracketed host — every
+        // request then fails initialise_fullme()'s host comparison and
+        // redirects to itself forever, regardless of target page.
+        $bracketend = strpos($_SERVER['HTTP_HOST'], ']');
+        $rurl['host'] = $bracketend === false ? $_SERVER['HTTP_HOST'] : substr($_SERVER['HTTP_HOST'], 0, $bracketend + 1);
+    } else if (isset($_SERVER['HTTP_HOST'])) {
         list($rurl['host']) = explode(':', $_SERVER['HTTP_HOST']);
     } else {
         $rurl['host'] = null;
