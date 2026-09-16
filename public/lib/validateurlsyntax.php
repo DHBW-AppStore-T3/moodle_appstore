@@ -275,7 +275,15 @@ function validateUrlSyntax( $urladdr, $options="" ){
     $userinfo          = '((' . $unreserved . '|' . $escaped . '|[;&=+$,]' . ')+(:(' . $unreserved . '|' . $escaped . '|[;:&=+$,]' . ')+)' . $aOptions['P'] . '@)' . $aOptions['u'];
 
                        // IP ADDRESS - Allows 0.0.0.0 to 255.255.255.255
-    $ipaddress         = '((((2(([0-4][0-9])|(5[0-5])))|([01]?[0-9]?[0-9]))\.){3}((2(([0-4][0-9])|(5[0-5])))|([01]?[0-9]?[0-9])))';
+    $ipv4address       = '((((2(([0-4][0-9])|(5[0-5])))|([01]?[0-9]?[0-9]))\.){3}((2(([0-4][0-9])|(5[0-5])))|([01]?[0-9]?[0-9])))';
+                       // IPv6 ADDRESS - bracketed literal per RFC 3986 (e.g. [2001:db8::1]), required
+                       // when the host has no IPv4/DNS name to fall back on (DHBW-AppStore-T3 org
+                       // fork: appstore-prod-01 is IPv6-only, no floating IP). Deliberately permissive
+                       // (any bracketed hex-and-colon run) rather than a strict IPv6 grammar — this
+                       // function only gates wwwroot syntax, PHP's own network stack does the real
+                       // connection, so a full RFC 4291 validator here would be unused complexity.
+    $ipv6address       = '(\[[0-9a-fA-F:]+\])';
+    $ipaddress         = '(' . $ipv4address . '|' . $ipv6address . ')';
 
                        // Tertiary Domain(s) - Optional - Multi - Although some sites may use other characters, the RFC says tertiary domains have the same naming restrictions as second level domains
     $domain_tertiary   = '(' . $alphanum . '(([a-zA-Z0-9-]{0,62})' . $alphanum . ')?\.)*';
