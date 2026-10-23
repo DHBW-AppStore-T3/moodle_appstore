@@ -31,7 +31,7 @@ RUN set -eux; \
     [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
     find /usr/local -type f -executable -exec ldd '{}' ';' \
         | awk '/=>/ { so = $(NF-1); if (index(so, "/usr/local/") == 1) { next }; gsub("^/(usr/)?", "", so); print so }' \
-        | sort -u | xargs -r dpkg-query --search | cut -d: -f1 | sort -u | xargs -r apt-mark manual; \
+        | sort -u | xargs -r dpkg-query --search | grep -v '^diversion by' | cut -d: -f1 | sort -u | xargs -r apt-mark manual; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecursiveRemove=true; \
     rm -rf /var/lib/apt/lists/*; \
     php -r 'foreach (["gd","intl","zip","soap","exif","pgsql","sodium","mbstring","Zend OPcache","curl","xml","dom","xmlreader","simplexml","ctype","fileinfo","iconv","openssl","zlib"] as $e) { if (!extension_loaded($e)) { fwrite(STDERR, "missing PHP extension $e\n"); exit(1); } }'
