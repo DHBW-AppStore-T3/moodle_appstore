@@ -18,7 +18,7 @@ COPY composer.json composer.lock ./
 # loosen the pins of their sibling libraries so they can follow.
 RUN sed -i -E 's|("guzzlehttp/(promises\|psr7)": ")([0-9])|\1^\3|' composer.json \
     && composer require --no-install --no-scripts --no-progress --ignore-platform-reqs \
-        --update-with-dependencies aws/aws-sdk-php:3.371.4 guzzlehttp/guzzle:7.15.2 mtdowling/jmespath.php:2.9.1 \
+        --update-with-all-dependencies aws/aws-sdk-php:3.371.4 guzzlehttp/guzzle:7.15.2 mtdowling/jmespath.php:2.9.1 \
     && composer install --no-dev --no-scripts --no-progress --prefer-dist --ignore-platform-reqs
 
 FROM php:8.3-apache
