@@ -1,0 +1,12 @@
+.git
+.github
+.docker
+node_modules
+vendor
+config.php
+claude_docs
+docker-compose.yml
+# Dev tooling: not needed at runtime (and its lockfile would put dev
+# dependencies in front of the image scanner).
+package.json
+npm-shrinkwrap.json
