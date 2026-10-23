@@ -1,13 +1,7 @@
 name: Run tests in a Composed Moodle Setup
 
+# Manual only in this fork (was: every push except main): our CI is moodle-image.yml.
 on:
-  push:
-    branches-ignore:
-      - main
-      - dev   # our image CI (moodle-image.yml) runs there instead
-      - MOODLE_[0-9]+_STABLE
-    tags-ignore:
-      - v[0-9]+.[0-9]+.[0-9]+*
   workflow_dispatch:
     inputs:
       phpunit_extra_options:
