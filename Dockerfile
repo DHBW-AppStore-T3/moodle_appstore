@@ -17,8 +17,9 @@ COPY composer.json composer.lock ./
 # (CVE-2026-69246, CVE-2026-54133, GHSA-27qh-8cxx-2cr5) to the fixed releases and
 # loosen the pins of their sibling libraries so they can follow.
 RUN sed -i -E 's|("guzzlehttp/(promises\|psr7)": ")([0-9])|\1^\3|' composer.json \
-    && composer require --no-dev --no-scripts --no-progress --prefer-dist --ignore-platform-reqs \
-        --update-with-dependencies aws/aws-sdk-php:3.371.4 guzzlehttp/guzzle:7.15.2 mtdowling/jmespath.php:2.9.1
+    && composer require --no-install --no-scripts --no-progress --ignore-platform-reqs \
+        --update-with-dependencies aws/aws-sdk-php:3.371.4 guzzlehttp/guzzle:7.15.2 mtdowling/jmespath.php:2.9.1 \
+    && composer install --no-dev --no-scripts --no-progress --prefer-dist --ignore-platform-reqs
 
 FROM php:8.3-apache
 LABEL org.opencontainers.image.source="https://github.com/DHBW-AppStore-T3/moodle_appstore" \
