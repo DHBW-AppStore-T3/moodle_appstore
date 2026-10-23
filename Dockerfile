@@ -12,11 +12,13 @@
 FROM composer:2.8 AS vendor
 WORKDIR /app
 COPY composer.json composer.lock ./
-# The lock file of the Moodle branch lags behind security fixes: take the
-# fixed releases of the three packages Trivy flagged (CVE-2026-69246,
-# CVE-2026-54133, GHSA-27qh-8cxx-2cr5) within the allowed version ranges.
-RUN composer update --no-dev --no-scripts --no-progress --prefer-dist --ignore-platform-reqs \
-        --with-dependencies aws/aws-sdk-php guzzlehttp/guzzle mtdowling/jmespath.php
+# The lock file of the Moodle branch lags behind security fixes and composer.json
+# pins exact versions: raise the pins of the packages Trivy flagged
+# (CVE-2026-69246, CVE-2026-54133, GHSA-27qh-8cxx-2cr5) to the fixed releases and
+# loosen the pins of their sibling libraries so they can follow.
+RUN sed -i -E 's|("guzzlehttp/(promises\|psr7)": ")([0-9])|\1^\3|' composer.json \
+    && composer require --no-dev --no-scripts --no-progress --prefer-dist --ignore-platform-reqs \
+        --update-with-dependencies aws/aws-sdk-php:3.371.4 guzzlehttp/guzzle:7.15.2 mtdowling/jmespath.php:2.9.1
 
 FROM php:8.3-apache
 LABEL org.opencontainers.image.source="https://github.com/DHBW-AppStore-T3/moodle_appstore" \
