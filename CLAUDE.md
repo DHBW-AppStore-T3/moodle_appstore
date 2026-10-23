@@ -11,3 +11,9 @@ https://github.com/DHBW-AppStore-T3/.github/blob/main/docs/HARNESS.md
 
 Details zu diesem Repo: siehe `claude_docs/architecture.md`,
 `claude_docs/decisions.md`.
+
+## Lokale Befehle
+- JS-Tests: `npm test` (Jest)
+- PHP-Tests: `vendor/bin/phpunit`
+- Grunt Tasks: `npx grunt`
+
