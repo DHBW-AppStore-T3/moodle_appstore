@@ -62,6 +62,12 @@ RUN chmod 0755 /usr/local/bin/init.sh /usr/local/bin/start.sh \
     && mkdir -p /var/www/moodledata /var/www/localcache \
     && chown www-data:www-data /var/www/moodledata /var/www/localcache
 
+# Security fixes of Debian newer than the base image, last so that only this small layer changes per build.
+# SECURITY_REFRESH changes in every CI build (the workflow passes the run id), so the upgrade below never comes from
+# the build cache: a cached layer keeps the package state of its first build and misses every fix released since.
+ARG SECURITY_REFRESH
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /var/www/html
 USER 33:33
 EXPOSE 8080
