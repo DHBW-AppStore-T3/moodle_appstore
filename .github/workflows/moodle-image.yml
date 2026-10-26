@@ -45,6 +45,8 @@ jobs:
       - name: Build (amd64, loaded for the scan)
         uses: docker/build-push-action@v5
         with:
+          # New per run: the upgrade step (Dockerfile, ARG SECURITY_REFRESH) never comes from the build cache.
+          build-args: SECURITY_REFRESH=${{ github.run_id }}
           context: .
           load: true
           tags: moodle:scan
@@ -83,6 +85,8 @@ jobs:
         if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main')
         uses: docker/build-push-action@v5
         with:
+          # New per run: the upgrade step (Dockerfile, ARG SECURITY_REFRESH) never comes from the build cache.
+          build-args: SECURITY_REFRESH=${{ github.run_id }}
           context: .
           push: true
           tags: |
