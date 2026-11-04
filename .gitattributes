@@ -8,3 +8,7 @@
 # Remove composer lock file changes from standard diff views.
 /composer.lock -diff
 /lib/bundles/**/*.js -diff
+
+# Scripts of the container image run in Linux: LF on every checkout, also on Windows
+# (CRLF breaks them: "exec /usr/local/bin/...: no such file or directory").
+/docker/*.sh text eol=lf
